@@ -83,7 +83,7 @@
     "@types/hast": "^3.0.4",
     "@types/image-size": "^0.8.0",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^24.12.4",
+    "@types/node": "^25.8.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/react-syntax-highlighter": "^15.5.13",
@@ -92,9 +92,9 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "16.2.6",
     "pagefind": "^1.5.2",
-    "pdf-to-img": "^5.0.0",
+    "pdf-to-img": "^6.1.0",
     "tailwindcss": "^4.3.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "ignoreScripts": [
     "sharp",
