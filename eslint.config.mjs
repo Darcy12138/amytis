@@ -29,9 +29,6 @@ const eslintConfig = defineConfig([
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs["core-web-vitals"].rules,
       ...reactHooksPlugin.configs.recommended.rules,
-      // New in eslint-plugin-react-hooks 7.1; flags 5 pre-existing sites
-      // in BookSidebar/Search. Tracked for code-level fix separately.
-      "react-hooks/set-state-in-effect": "warn",
     },
   },
 ]);
