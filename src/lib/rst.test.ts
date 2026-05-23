@@ -98,6 +98,29 @@ describe('rst utils', () => {
     expect(markdown).not.toContain('> **Unknownthing**');
   });
 
+  test('treats .. cnote:: as a custom admonition with :caption: support', () => {
+    const withCaption = rstToMarkdown([
+      '.. cnote::',
+      '   :caption: 说明',
+      '',
+      '   Body content here.',
+    ].join('\n'));
+
+    expect(withCaption).toContain('> **说明**');
+    expect(withCaption).toContain('> Body content here.');
+    expect(withCaption).not.toContain(':caption:');
+    expect(withCaption).not.toContain('> **Cnote**');
+
+    const withoutCaption = rstToMarkdown([
+      '.. cnote::',
+      '',
+      '   Default label fallback.',
+    ].join('\n'));
+
+    expect(withoutCaption).toContain('> **Cnote**');
+    expect(withoutCaption).toContain('> Default label fallback.');
+  });
+
   test('renders line blocks (| prefixed lines) as a blockquote with hard breaks', () => {
     const md = rstToMarkdown([
       'Intro paragraph.',

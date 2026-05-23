@@ -421,15 +421,34 @@ export function rstToMarkdown(body: string): string {
     }
 
     const admonitionMatch = line.match(
-      /^\.\.\s+(note|warning|tip|caution|attention|important|hint|danger|error)::\s*$/i,
+      /^\.\.\s+(note|warning|tip|caution|attention|important|hint|danger|error|cnote)::\s*$/i,
     );
     if (admonitionMatch) {
       const kind = admonitionMatch[1].toLowerCase();
       const { content, nextIndex } = readIndentedBlock(lines, i + 1);
-      const label = kind.charAt(0).toUpperCase() + kind.slice(1);
+
+      let captionLabel: string | null = null;
+      let bodyStart = 0;
+      while (bodyStart < content.length && content[bodyStart].trim() === '') bodyStart++;
+      while (bodyStart < content.length) {
+        const ln = content[bodyStart];
+        if (ln.trim() === '') {
+          bodyStart++;
+          break;
+        }
+        const optionMatch = ln.match(/^\s*:([A-Za-z-]+):\s*(.*)$/);
+        if (!optionMatch) break;
+        if (optionMatch[1].toLowerCase() === 'caption') {
+          captionLabel = optionMatch[2].trim();
+        }
+        bodyStart++;
+      }
+      const bodyContent = content.slice(bodyStart);
+
+      const label = captionLabel || (kind.charAt(0).toUpperCase() + kind.slice(1));
       out.push(`> **${label}**`);
       out.push('>');
-      for (const ln of content) {
+      for (const ln of bodyContent) {
         out.push(ln.trim() === '' ? '>' : `> ${convertInlineRst(ln)}`);
       }
       out.push('');
