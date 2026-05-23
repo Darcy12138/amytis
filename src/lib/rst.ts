@@ -289,6 +289,7 @@ function mergeMetadata(base: RstMetadata, override: RstMetadata): RstMetadata {
 
 function convertInlineRst(text: string): string {
   return text
+    .replace(/\\([ \t])/g, '')
     .replace(/``([^`]+)``/g, '`$1`')
     .replace(/`([^`]+?)\s*<([^>]+)>`__/g, '[$1]($2)')
     .replace(/`([^`]+?)\s*<([^>]+)>`_/g, '[$1]($2)');

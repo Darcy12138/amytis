@@ -98,6 +98,18 @@ describe('rst utils', () => {
     expect(markdown).not.toContain('> **Unknownthing**');
   });
 
+  test('normalizes rST escaped whitespace inline', () => {
+    const doc = parseRstDocument([
+      'Title',
+      '=====',
+      '',
+      '前面提到的\\ ``code``\\ 这件事。',
+    ].join('\n'));
+
+    expect(doc.markdownBody).toContain('前面提到的`code`这件事。');
+    expect(doc.markdownBody).not.toContain('\\ ');
+  });
+
   test('ignores unknown metadata fields and rejects malformed supported values', () => {
     const ignored = parseRstDocument([
       'Title',
