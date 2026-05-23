@@ -98,6 +98,23 @@ describe('rst utils', () => {
     expect(markdown).not.toContain('> **Unknownthing**');
   });
 
+  test('renders :ref: and :numref: roles as anchor links', () => {
+    const md = rstToMarkdown([
+      'See :ref:`s_extension` for details.',
+      '',
+      'Look at :ref:`扩展机制 <s_extension>`.',
+      '',
+      'Per :numref:`图%s <图：架构图>` above.',
+      '',
+      'Bare :numref:`图：架构图` works too.',
+    ].join('\n'));
+
+    expect(md).toContain('[s_extension](#s_extension)');
+    expect(md).toContain('[扩展机制](#s_extension)');
+    expect(md).toContain('[图](#图架构图)');
+    expect(md).toContain('[图：架构图](#图架构图)');
+  });
+
   test('suppresses .. toctree:: directive and its child list from rendered body', () => {
     const markdown = rstToMarkdown([
       'Intro paragraph.',

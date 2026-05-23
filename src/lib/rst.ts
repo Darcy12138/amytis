@@ -287,10 +287,33 @@ function mergeMetadata(base: RstMetadata, override: RstMetadata): RstMetadata {
   };
 }
 
+function slugifyAnchor(target: string): string {
+  return new GithubSlugger().slug(target.trim());
+}
+
 function convertInlineRst(text: string): string {
   return text
     .replace(/\\([ \t])/g, '')
     .replace(/``([^`]+)``/g, '`$1`')
+    .replace(
+      /:ref:`([^<`]+?)\s*<([^>`]+)>`/g,
+      (_, title: string, target: string) => `[${title.trim()}](#${slugifyAnchor(target)})`,
+    )
+    .replace(
+      /:ref:`([^`]+)`/g,
+      (_, target: string) => `[${target.trim()}](#${slugifyAnchor(target)})`,
+    )
+    .replace(
+      /:numref:`([^<`]+?)\s*<([^>`]+)>`/g,
+      (_, title: string, target: string) => {
+        const label = title.replace(/%s/g, '').trim() || target.trim();
+        return `[${label}](#${slugifyAnchor(target)})`;
+      },
+    )
+    .replace(
+      /:numref:`([^`]+)`/g,
+      (_, target: string) => `[${target.trim()}](#${slugifyAnchor(target)})`,
+    )
     .replace(/`([^`]+?)\s*<([^>]+)>`__/g, '[$1]($2)')
     .replace(/`([^`]+?)\s*<([^>]+)>`_/g, '[$1]($2)');
 }
