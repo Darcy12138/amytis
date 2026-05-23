@@ -399,6 +399,27 @@ export function rstToMarkdown(body: string): string {
       continue;
     }
 
+    const lineBlockRegex = /^\s*\|(?:\s(.*))?$/;
+    if (lineBlockRegex.test(line)) {
+      const blockLines: string[] = [];
+      let j = i;
+      while (j < lines.length) {
+        const lineMatch = lines[j].match(lineBlockRegex);
+        if (!lineMatch) break;
+        blockLines.push((lineMatch[1] ?? '').trim());
+        j++;
+      }
+      out.push('');
+      blockLines.forEach((bl, idx) => {
+        const content = convertInlineRst(bl);
+        const isLast = idx === blockLines.length - 1;
+        out.push(isLast ? `> ${content}` : `> ${content}  `);
+      });
+      out.push('');
+      i = j - 1;
+      continue;
+    }
+
     const admonitionMatch = line.match(
       /^\.\.\s+(note|warning|tip|caution|attention|important|hint|danger|error)::\s*$/i,
     );

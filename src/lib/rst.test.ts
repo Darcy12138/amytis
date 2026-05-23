@@ -98,6 +98,27 @@ describe('rst utils', () => {
     expect(markdown).not.toContain('> **Unknownthing**');
   });
 
+  test('renders line blocks (| prefixed lines) as a blockquote with hard breaks', () => {
+    const md = rstToMarkdown([
+      'Intro paragraph.',
+      '',
+      '  | First poetic line.',
+      '  | Second poetic line.',
+      '  | Third with ``code``.',
+      '',
+      'Trailing paragraph.',
+    ].join('\n'));
+
+    expect(md).toContain('> First poetic line.  ');
+    expect(md).toContain('> Second poetic line.  ');
+    expect(md).toContain('> Third with `code`.');
+    expect(md).not.toContain('| First');
+    const lines = md.split('\n');
+    const last = lines.findIndex((l) => l.startsWith('> Third'));
+    expect(last).toBeGreaterThan(-1);
+    expect(lines[last].endsWith('  ')).toBe(false);
+  });
+
   test('renders :doc: cross-references and works alongside escaped whitespace', () => {
     const md = rstToMarkdown([
       '前面提到的\\ :doc:`AI编程中人的作用`\\ 这件事。',
